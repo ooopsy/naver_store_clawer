@@ -1,0 +1,10 @@
+package org.springframework.samples.mvc.views;
+
+public class TotalObject {
+	int totalCount;
+	int totalScore;
+	public int get avgScore() {
+		
+		
+	}
+}

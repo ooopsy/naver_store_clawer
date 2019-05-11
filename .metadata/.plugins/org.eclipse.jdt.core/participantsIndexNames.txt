@@ -1,0 +1,7 @@
+INDEX VERSION 1.131
+/Users/licheng/Documents/workspace-sts-3.9.7.RELEASE/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/3413570582.index
+/spring-mvc-showcase/src/main/java
+/Users/licheng/Documents/workspace-sts-3.9.7.RELEASE/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/2921095625.index
+/spring-mvc-showcase/src/main/java
+/Users/licheng/Documents/workspace-sts-3.9.7.RELEASE/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/2518846348.index
+/spring-mvc-showcase/src/main/java

@@ -1,0 +1,21 @@
+package org.springframework.samples.mvc.views;
+
+import org.apache.logging.log4j.core.lookup.MainMapLookup;
+
+public class TotalObject {
+	double totalCount;
+	double totalScore;
+	public double getAvgScore() {
+		if(totalCount == 0) {
+			return 0;
+		}
+		return totalScore/totalCount;
+		
+	}
+	
+	public static void main(String[] args) {
+		totalCount = 2;
+		totalScore = 9;
+		System.out.println(1/5);
+	}
+}

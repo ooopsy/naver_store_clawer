@@ -1,0 +1,61 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html;charset=utf-8"%>
+<html>
+<head>
+	<title>My HTML View</title>
+	<link href="<c:url value="/resources/form.css" />" rel="stylesheet"  type="text/css" />
+	<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+	
+	<script type="text/javascript">
+	
+	$(document).ready(function(){
+		
+		$("#search").click(function(){
+			
+			$.get("/spring-mvc-showcase/views/html", { "link": $("#link").val()},
+		   		function(data){
+				var html = "<table border='5' style='width: 100%; font-size: 5; border: 8'><tr style='background-color:#B8BFD8;'><td>옵션</td><td>리뷰수</td></tr>";
+				for (var i=0;i<data.length;i++)
+				{
+					for(var item in data[i]){
+						var total = data[i][item];
+					    html += "<tr>";
+					    html += "<td>" + item + "</td>";
+					    html += "<td>" + total["totalCount"] + "</td>";
+					    html += "</tr>";
+					}
+					
+				console.log((data[i] + "<br>"));
+				}
+				html += "</table>";
+				$("#tableDiv").html(html);
+		  	}).fail(function (msg) {
+	               alert('出错  截图  发送输入链接给我');
+	               
+	               alert(msg);
+	        });
+			
+		});
+		
+	})
+	
+	
+	
+	</script>
+			
+</head>
+<body>
+
+<div id="linkDiv" style="text-align:center;">link</div>
+<div><textarea id="link" style="width: 100%; height: 20%"></textarea></div>
+<br>
+<div style="text-align:right;"><input id="search" type="button"  style="width: 30%;background-color:#B8BFD8; "value="搜"/></div>
+<br>
+
+<div style="width:100%" id="tableDiv">
+
+</div>
+
+
+</body>
+</html>

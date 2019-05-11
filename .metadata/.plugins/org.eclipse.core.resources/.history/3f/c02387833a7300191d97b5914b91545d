@@ -1,0 +1,136 @@
+package org.springframework.samples.mvc.views;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+
+@Controller
+@RequestMapping("/views/*")
+public class ViewsController {
+
+	@GetMapping("html")
+	public String prepare(Model model) {
+		List<Map<String, Integer>> list = new ArrayList<Map<String, Integer>>();
+		
+		
+	 	String url = "https://smartstore.naver.com/mysweety/products/555727008/reviews/page.json";
+	 	String param = "size=20&sortType=REVIEW_RANKING&contentType=ALL&topicCode&page=" + 1;
+	 	String data = sendGet("https://smartstore.naver.com/mysweety/products/555727008/reviews/page.json",param);
+	 	
+	 	JSONObject jObj = JSONObject.fromObject(data);
+	 	JSONArray jArray =  jObj.getJSONObject("htReturnValue").getJSONObject("pagedResult").getJSONArray("content");
+	 	
+	 	for(int i=0; i< jArray.size(); i++) {
+	 		JSONObject jo = jArray.getJSONObject(i);
+	 		
+	 		String pName = jo.getString("purchasedProductName");
+	 		String oName = jo.getString("purchasedOptionContents");
+	 		String score = jo.getString("reviewScore");
+	 		String contents = jo.getString("contents");
+	 		Map<String, String> map = new HashMap<String, String>();
+	 		map.put("pName", pName);
+	 		map.put("oName", oName);
+	 		map.put("score", score);
+	 		map.put("contents", contents);
+	 		
+	 		list.add(e)
+	 		
+	 	}
+	 	
+	 	System.out.println(jArray);
+	 
+		return "views/html";
+	}
+	
+	 public void sendGetRequest(int page) {
+		 	String url = "https://smartstore.naver.com/mysweety/products/555727008/reviews/page.json";
+		 	String param = "size=20&sortType=REVIEW_RANKING&contentType=ALL&topicCode&page=" + page;
+		 	String data = sendGet("https://smartstore.naver.com/mysweety/products/555727008/reviews/page.json",param);
+	 }
+	
+	
+	 public static String sendGet(String url, String param) {
+	        String result = "";
+	        BufferedReader in = null;
+	        try {
+	            String urlNameString = url + "?" + param;
+	            URL realUrl = new URL(urlNameString);
+	            // 打开和URL之间的连接
+	            URLConnection connection = realUrl.openConnection();
+	            // 设置通用的请求属性
+	            connection.setRequestProperty("accept", "*/*");
+	            connection.setRequestProperty("connection", "Keep-Alive");
+	            connection.setRequestProperty("user-agent",
+	                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+	            // 建立实际的连接
+	            connection.connect();
+	            // 获取所有响应头字段
+	            Map<String, List<String>> map = connection.getHeaderFields();
+	            // 遍历所有的响应头字段
+	            for (String key : map.keySet()) {
+	                System.out.println(key + "--->" + map.get(key));
+	            }
+	            // 定义 BufferedReader输入流来读取URL的响应
+	            in = new BufferedReader(new InputStreamReader(
+	                    connection.getInputStream()));
+	            String line;
+	            while ((line = in.readLine()) != null) {
+	                result += line;
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        // 使用finally块来关闭输入流
+	        finally {
+	            try {
+	                if (in != null) {
+	                    in.close();
+	                }
+	            } catch (Exception e2) {
+	                e2.printStackTrace();
+	            }
+	        }
+	        return result;
+	    }
+	
+	@GetMapping("/viewName")
+	public void usingRequestToViewNameTranslator(Model model) {
+		model.addAttribute("foo", "bar");
+		model.addAttribute("fruit", "apple");
+	}
+
+	@GetMapping("pathVariables/{foo}/{fruit}")
+	public String pathVars(@PathVariable String foo, @PathVariable String fruit) {
+		// No need to add @PathVariables "foo" and "fruit" to the model
+		// They will be merged in the model before rendering
+		return "views/html";
+	}
+
+	@GetMapping("dataBinding/{foo}/{fruit}")
+	public String dataBinding(@Valid JavaBean javaBean, Model model) {
+		// JavaBean "foo" and "fruit" properties populated from URI variables 
+		return "views/dataBinding";
+	}
+	
+	
+	
+	
+
+}
