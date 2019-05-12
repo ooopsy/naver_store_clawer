@@ -31,23 +31,32 @@ import net.sf.json.JSONObject;
 @Controller
 @RequestMapping("/views/*")
 public class ViewsController {
-	private static Pattern pattern =  Pattern.compile("(.*products/\\d*)(.*)");
+	private static Pattern pattern =  Pattern.compile("(.*products/)(.*)");
 	@GetMapping("html")
 	public @ResponseBody List<TotalObject> prepare(@RequestParam String link, Model model) {
-		
+		String html = sendGet(link, null);
 		System.out.println("in:::" + System.currentTimeMillis());
-		
-		Matcher matcher = pattern.matcher(link);
-		String url ="";
+		String product_id = "";
+		Pattern pattern =  Pattern.compile("(\"originalProductNo\" : \"\\d*\",)");
+		Matcher matcher = pattern.matcher(html);
 		if(matcher.find()) {
-			url = matcher.group(1);
+			String prefix = matcher.group(1);
+			product_id =prefix.replaceAll("\\D", "");
+		}
+		
+		Matcher matcher1 = this.pattern.matcher(link);
+		String url ="";
+		if(matcher1.find()) {
+			url = matcher1.group(1);
 		}else {
 			return null;
 		}
+		url += product_id;
 		
 		Map<String, TotalObject> total = new TreeMap<String, TotalObject>();
-		int page  = 1;
 		sendGetRequest(url, 1, total);
+		
+		
 		List totalList = new ArrayList(total.entrySet());
 		Collections.sort(totalList, new Comparator() {
 			@Override
@@ -76,7 +85,6 @@ public class ViewsController {
 	 public void sendGetRequest(String productUrl, int page, Map<String, TotalObject> total) {
 		 	String param = "size=20&sortType=REVIEW_RANKING&contentType=ALL&topicCode&page=" + page;
 		 	String data = sendGet(productUrl+"/reviews/page.json",param);
-		 	
 		 	JSONObject jObj = JSONObject.fromObject(data);
 		 	JSONArray jArray =  jObj.getJSONObject("htReturnValue").getJSONObject("pagedResult").getJSONArray("content");
 		 	int totalPage = jObj.getJSONObject("htReturnValue").getJSONObject("pagedResult").getInt("totalPages");
@@ -109,6 +117,10 @@ public class ViewsController {
 	        BufferedReader in = null;
 	        try {
 	            String urlNameString = url + "?" + param;
+	            if(param == null || param.equals("")) {
+	            	urlNameString = url;
+	            }
+	            
 	            URL realUrl = new URL(urlNameString);
 	            // 打开和URL之间的连接
 	            URLConnection connection = realUrl.openConnection();

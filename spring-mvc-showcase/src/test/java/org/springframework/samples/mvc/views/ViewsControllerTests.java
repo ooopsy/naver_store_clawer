@@ -46,5 +46,6 @@ public class ViewsControllerTests extends AbstractContextControllerTests {
 	public void uriTemplate() throws Exception {
 		this.mockMvc.perform(get("/views/pathVariables/bar/apple"))
 				.andExpect(view().name(containsString("views/html")));
+		
 	}
 }
